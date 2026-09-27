@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>Daily Expense</title>
-<meta name="description" content="Track your daily expenses — add what you spend, see it live, analyse where the money goes." />
+<meta name="description" content="Track your daily expenses — add, filter by date range, search, analyse." />
 <meta name="theme-color" content="#070b14" />
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="icon" type="image/png" sizes="48x48" href="icons/favicon-48.png" />
@@ -31,8 +31,8 @@ body{font-family:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;backgroun
   background-image:radial-gradient(900px 500px at 85% -10%,rgba(99,102,241,.15),transparent 60%),radial-gradient(700px 400px at -10% 110%,rgba(14,159,122,.12),transparent 55%);background-attachment:fixed}
 ::selection{background:var(--c2);color:#fff}
 input,button,select{font-family:inherit}
+a{text-decoration:none;color:inherit}
 
-/* header */
 .hd{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:11px;padding:14px 16px 12px;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
 .hd .logo{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;font-size:18px;flex:none;box-shadow:0 0 22px -6px #f59e0b}
 .hd h1{font-family:"Sora",sans-serif;font-size:17px;font-weight:800}
@@ -41,7 +41,6 @@ input,button,select{font-family:inherit}
 .hd .tot .l{font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:800}
 .hd .tot .v{font-family:"Sora",sans-serif;font-size:19px;font-weight:800;color:var(--good)}
 
-/* views */
 .view{padding:14px 16px}
 .view.hidden{display:none}
 
@@ -60,26 +59,41 @@ input,button,select{font-family:inherit}
 .cat:active{transform:scale(.95)}
 
 .frow{margin-top:14px}
+.frow label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:800;margin-bottom:6px}
 .frow input{width:100%;padding:13px 14px;border-radius:13px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:15px;outline:none}
 .frow input:focus{border-color:var(--c1);box-shadow:0 0 0 3px rgba(34,211,238,.14)}
-.add{width:100%;margin-top:16px;padding:15px;border:0;border-radius:14px;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;font-size:16px;font-weight:800;cursor:pointer;font-family:inherit}
+.frow input[type="date"]{color-scheme:dark;-webkit-appearance:none}
+
+.add{width:100%;margin-top:16px;padding:15px;border:0;border-radius:14px;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;font-size:16px;font-weight:800;cursor:pointer}
 .add:active{transform:scale(.98)}
 
-.today-head{display:flex;align-items:center;margin:22px 0 10px}
-.today-head h3{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
-.today-head .n{margin-left:auto;font-size:11px;color:var(--faint)}
+.sec-head{display:flex;align-items:center;margin:22px 0 10px}
+.sec-head h3{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.sec-head .n{margin-left:auto;font-size:11px;color:var(--faint)}
 .exp{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:var(--card);border:1px solid var(--border);margin-bottom:9px;animation:pop .25s var(--ease)}
 @keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .exp .ic{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;font-size:17px;background:var(--card2);flex:none}
 .exp .m{flex:1;min-width:0}
-.exp .m b{font-size:14.5px;display:block}
+.exp .m b{font-size:14px;display:block}
 .exp .m span{font-size:11px;color:var(--faint)}
 .exp .amt{font-family:"Sora",sans-serif;font-size:15px;font-weight:800}
 .exp .del{border:0;background:none;color:var(--faint);font-size:16px;cursor:pointer;padding:6px}
 .exp .del:active{color:var(--bad)}
 .empty{text-align:center;color:var(--faint);padding:26px;font-size:13px}
 
-/* dashboard */
+/* dashboard filters */
+.fbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.preset{flex:1;min-width:56px;padding:9px 6px;border-radius:11px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-size:11.5px;font-weight:700;text-align:center;cursor:pointer}
+.preset.on{background:linear-gradient(135deg,var(--c2),var(--c1));color:#04121a;border-color:transparent}
+.range{display:flex;gap:7px;align-items:center;width:100%}
+.range input{padding:9px 10px;border-radius:11px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:13px;color-scheme:dark}
+.range input[type="date"]{flex:1}
+.range span{color:var(--faint);font-size:12px}
+.frow2{display:flex;gap:7px;width:100%}
+.frow2 select,.frow2 input{flex:1;min-width:0;padding:10px 11px;border-radius:11px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:13px;outline:none}
+.frow2 select{color-scheme:dark}
+.frow2 input:focus,.frow2 select:focus{border-color:var(--c1)}
+
 .kpis{display:grid;grid-template-columns:1fr 1fr;gap:11px}
 .kpi{background:linear-gradient(160deg,var(--card),var(--card2));border:1px solid var(--border);border-radius:16px;padding:14px 15px}
 .kpi .l{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:800}
@@ -95,11 +109,8 @@ input,button,select{font-family:inherit}
 .cat-tbl .nm{flex:1;font-size:13.5px;font-weight:600}
 .cat-tbl .pct{font-size:11px;color:var(--faint);width:42px;text-align:right}
 .cat-tbl .am{font-family:"Sora",sans-serif;font-size:13.5px;font-weight:800;width:80px;text-align:right}
-.month-nav{display:flex;align-items:center;gap:8px;margin:14px 0 8px}
-.month-nav button{border:1px solid var(--border);background:var(--card);color:var(--text);width:34px;height:34px;border-radius:11px;font-size:16px;cursor:pointer}
-.month-nav .ml{flex:1;text-align:center;font-family:"Sora",sans-serif;font-weight:800;font-size:14px}
 
-/* bottom nav */
+/* nav */
 .nav{position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;background:color-mix(in srgb,var(--bg2) 94%,transparent);backdrop-filter:blur(16px);border-top:1px solid var(--border);padding-bottom:var(--sab)}
 .nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:11px 0 10px;background:none;border:0;color:var(--muted);font-size:10.5px;font-weight:700;cursor:pointer}
 .nav button svg{width:22px;height:22px}
@@ -116,7 +127,7 @@ input,button,select{font-family:inherit}
 <header class="hd">
   <div class="logo">৳</div>
   <div><h1>Daily Expense</h1><small>track what you spend</small></div>
-  <div class="tot"><div class="l">Today</div><div class="v" id="hdToday">৳0</div></div>
+  <div class="tot"><div class="l" id="hdLab">Today</div><div class="v" id="hdToday">৳0</div></div>
 </header>
 
 <!-- ENTRY -->
@@ -126,22 +137,36 @@ input,button,select{font-family:inherit}
     <div class="amt-row"><span class="cur">৳</span><input type="number" id="fAmt" inputmode="decimal" placeholder="0" step="0.01" min="0" /></div>
   </div>
   <div class="cats" id="cats"></div>
-  <div class="frow"><input type="text" id="fNote" placeholder="Note (optional)" /></div>
+  <div class="frow"><label>Note (optional)</label><input type="text" id="fNote" placeholder="e.g. lunch, rickshaw…" /></div>
+  <div class="frow"><label>Date</label><input type="date" id="fDate" /></div>
   <button class="add" id="addBtn">Add Expense</button>
 
-  <div class="today-head"><h3>Today's expenses</h3><span class="n" id="todayN"></span></div>
+  <div class="sec-head"><h3>Recent expenses</h3><span class="n" id="todayN"></span></div>
   <div id="todayList"></div>
 </section>
 
 <!-- DASHBOARD -->
 <section class="view hidden" id="vDash">
-  <div class="kpis" id="kpis"></div>
-  <div class="month-nav">
-    <button id="mPrev">‹</button><div class="ml" id="mLabel"></div><button id="mNext">›</button>
+  <div class="fbar" id="presets">
+    <button class="preset on" data-p="month">Month</button>
+    <button class="preset" data-p="week">Week</button>
+    <button class="preset" data-p="today">Today</button>
+    <button class="preset" data-p="all">All</button>
   </div>
-  <div class="panel"><h3>By category — this month</h3><div class="chart"><canvas id="cCat"></canvas></div></div>
-  <div class="panel"><h3>Daily trend — last 14 days</h3><div class="chart"><canvas id="cDaily"></canvas></div></div>
+  <div class="fbar range">
+    <input type="date" id="fFrom" /><span>→</span><input type="date" id="fTo" />
+  </div>
+  <div class="fbar frow2">
+    <select id="fCat"><option value="all">All categories</option></select>
+    <input type="text" id="fSearch" placeholder="🔍 Search note / category…" />
+  </div>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="panel"><h3>By category</h3><div class="chart"><canvas id="cCat"></canvas></div></div>
+  <div class="panel"><h3>Daily trend</h3><div class="chart"><canvas id="cDaily"></canvas></div></div>
   <div class="panel"><h3>Category breakdown</h3><div class="cat-tbl" id="catTbl"></div></div>
+  <div class="panel"><h3>Transactions</h3><div id="txnList"></div></div>
 </section>
 
 <nav class="nav">
@@ -165,119 +190,126 @@ var CATS=[
   {id:'entertain',n:'Fun',e:'🎬',c:'#f472b6'},
   {id:'other',n:'Other',e:'💡',c:'#94a3b8'}
 ];
-var catMap={}; CATS.forEach(function(c){catMap[c.id]=c;});
-var data=[];
-try{data=JSON.parse(localStorage.getItem(KEY)||'[]');}catch(e){data=[];}
-var month=new Date().getFullYear()*100+(new Date().getMonth()+1);
+var catMap={};CATS.forEach(function(c){catMap[c.id]=c;});
+var data=[];try{data=JSON.parse(localStorage.getItem(KEY)||'[]');}catch(e){data=[];}
 var charts={};
 var $=function(s){return document.querySelector(s);};
-var today=function(d){d=d||new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');};
 var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-var fmt=function(n){return '\u09F3'+Number(n||0).toLocaleString('en-US',{maximumFractionDigits:2,minimumFractionDigits:0});};
-
+var filter={preset:'month',from:'',to:'',cat:'all',q:''};
+function fmt(n){return '\u09F3'+Number(n||0).toLocaleString('en-US',{maximumFractionDigits:2,minimumFractionDigits:0});}
+function dstr(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function today(){return dstr(new Date());}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(data));}catch(e){}}
+function sum(a){return a.reduce(function(x,r){return x+r.amt;},0);}
 
-/* cats render */
-var catsEl=$('#cats'); catsEl.innerHTML=CATS.map(function(c,i){
-  return '<div class="cat'+(i===0?' on':'')+'" data-cat="'+c.id+'" style="--cat-c:'+c.c+'"><span class="e">'+c.e+'</span>'+c.n+'</div>';
-}).join('');
+/* cats */
+var catsEl=$('#cats');catsEl.innerHTML=CATS.map(function(c,i){return '<div class="cat'+(i===0?' on':'')+'" data-cat="'+c.id+'" style="--cat-c:'+c.c+'"><span class="e">'+c.e+'</span>'+c.n+'</div>';}).join('');
 var selCat=CATS[0].id;
 catsEl.addEventListener('click',function(e){var t=e.target.closest('.cat');if(!t)return;selCat=t.dataset.cat;catsEl.querySelectorAll('.cat').forEach(function(x){x.classList.toggle('on',x===t);});});
+var fCat=$('#fCat');fCat.innerHTML='<option value="all">All categories</option>'+CATS.map(function(c){return '<option value="'+c.id+'">'+c.e+' '+c.n+'</option>';}).join('');
 
-/* add */
+/* entry */
+$('#fDate').value=today();
 function addExpense(){
-  var amt=parseFloat($('#fAmt').value);var note=$('#fNote').value.trim();
+  var amt=parseFloat($('#fAmt').value),note=$('#fNote').value.trim(),date=$('#fDate').value||today();
   if(!amt||amt<=0){toast('Enter an amount');return;}
-  data.push({id:Date.now()+Math.random(),amt:amt,cat:selCat,note:note,date:today(),ts:Date.now()});
-  save();$('#fAmt').value='';$('#fNote').value='';selCat=CATS[0].id;
+  data.push({id:Date.now()+Math.random(),amt:amt,cat:selCat,note:note,date:date,ts:Date.now()});
+  data.sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:0;});
+  save();$('#fAmt').value='';$('#fNote').value='';$('#fDate').value=today();selCat=CATS[0].id;
   catsEl.querySelectorAll('.cat').forEach(function(x,i){x.classList.toggle('on',i===0);});
   render();toast('Added '+fmt(amt));
 }
 $('#addBtn').addEventListener('click',addExpense);
 $('#fAmt').addEventListener('keydown',function(e){if(e.key==='Enter')addExpense();});
-
 function del(id){data=data.filter(function(x){return x.id!==id;});save();render();toast('Removed');}
 
-/* today list */
-function renderToday(){
-  var t=today();var list=data.filter(function(x){return x.date===t;}).slice().reverse();
-  var el=$('#todayList');
-  $('#todayN').textContent=list.length?list.length+' entries':'';
-  if(!list.length){el.innerHTML='<div class="empty">No expenses yet today.<br>Add your first one above. 👆</div>';return;}
+/* recent list (entry) */
+function renderRecent(){
+  var list=data.slice(0,20);var el=$('#todayList');
+  $('#todayN').textContent=list.length?list.length+' recent':'';
+  if(!list.length){el.innerHTML='<div class="empty">No expenses yet.<br>Add your first one above. 👆</div>';return;}
   el.innerHTML=list.map(function(x){
     var c=catMap[x.cat]||catMap.other;
-    return '<div class="exp"><div class="ic">'+c.e+'</div><div class="m"><b>'+c.n+'</b><span>'+(x.note?x.note+' · ':'')+new Date(x.ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})+'</span></div><div class="amt">'+fmt(x.amt)+'</div><button class="del" data-id="'+x.id+'">✕</button></div>';
+    return '<div class="exp"><div class="ic">'+c.e+'</div><div class="m"><b>'+c.n+'</b><span>'+(x.note?x.note+' · ':'')+x.date+'</span></div><div class="amt">'+fmt(x.amt)+'</div><button class="del" data-id="'+x.id+'">✕</button></div>';
   }).join('');
   el.querySelectorAll('.del').forEach(function(b){b.addEventListener('click',function(){del(parseFloat(b.dataset.id));});});
 }
 
-/* dashboard */
-function dstr(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
-function monthKey(y,m){return y*100+(m+1);}
-function monthLabel(k){return MON[(k%100)-1]+' '+Math.floor(k/100);}
-function sum(a){return a.reduce(function(x,r){return x+r.amt;},0);}
+/* dashboard filter */
+function filtered(){
+  var out=data;
+  if(filter.from)out=out.filter(function(x){return x.date>=filter.from;});
+  if(filter.to)out=out.filter(function(x){return x.date<=filter.to;});
+  if(filter.cat!=='all')out=out.filter(function(x){return x.cat===filter.cat;});
+  if(filter.q){var q=filter.q.toLowerCase();out=out.filter(function(x){return (x.note||'').toLowerCase().indexOf(q)>-1||(catMap[x.cat]||{}).n.toLowerCase().indexOf(q)>-1;});}
+  return out;
+}
+function applyPreset(p){
+  filter.preset=p;var t=new Date();
+  if(p==='today'){filter.from=filter.to=today();}
+  else if(p==='week'){filter.from=dstr(new Date(t.getTime()-6*86400000));filter.to=today();}
+  else if(p==='month'){filter.from=t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-01';filter.to=today();}
+  else{filter.from='';filter.to='';}
+  $('#fFrom').value=filter.from;$('#fTo').value=filter.to;
+  document.querySelectorAll('.preset').forEach(function(b){b.classList.toggle('on',b.dataset.p===p);});
+  renderDash();
+}
 
 function renderDash(){
-  var now=new Date();var t=today();
-  var thisMonth=data.filter(function(x){var d=new Date(x.date+'T00:00:00');return d.getFullYear()===now.getFullYear()&&d.getMonth()===now.getMonth();});
-  var thisWeek=data.filter(function(x){var d=new Date(x.date+'T00:00:00');var diff=(now-d)/86400000;return diff>=0&&diff<7;});
-  var todayL=data.filter(function(x){return x.date===t;});
-  var totMonth=sum(thisMonth),totWeek=sum(thisWeek),totToday=sum(todayL);
-  var days=new Set(thisMonth.map(function(x){return x.date;})).size;
-  $('#hdToday').textContent=fmt(totToday);
+  var rows=filtered();
+  var tot=sum(rows),days=new Set(rows.map(function(x){return x.date;})).size;
+  var topCat='—';var catAgg={};CATS.forEach(function(c){catAgg[c.id]=0;});rows.forEach(function(x){catAgg[x.cat]=(catAgg[x.cat]||0)+x.amt;});
+  var top=CATS.map(function(c){return {c:c,amt:catAgg[c.id]};}).sort(function(a,b){return b.amt-a.amt;})[0];
+  if(top&&top.amt>0)topCat=top.c.e+' '+top.c.n;
+  $('#hdToday').textContent=fmt(tot);
+  $('#hdLab').textContent=filter.preset==='today'?'Today':filter.preset==='week'?'This week':filter.preset==='month'?'This month':'Total';
   $('#kpis').innerHTML=
-    '<div class="kpi"><div class="l">Today</div><div class="v" style="color:var(--good)">'+fmt(totToday)+'</div><div class="s">'+todayL.length+' entries</div></div>'+
-    '<div class="kpi"><div class="l">This week</div><div class="v" style="color:var(--c1)">'+fmt(totWeek)+'</div><div class="s">last 7 days</div></div>'+
-    '<div class="kpi"><div class="l">This month</div><div class="v" style="color:var(--c3)">'+fmt(totMonth)+'</div><div class="s">'+thisMonth.length+' entries</div></div>'+
-    '<div class="kpi"><div class="l">Avg / day</div><div class="v" style="color:var(--warn)">'+fmt(days?totMonth/days:0)+'</div><div class="s">over '+days+' days</div></div>';
+    '<div class="kpi"><div class="l">Total spent</div><div class="v" style="color:var(--good)">'+fmt(tot)+'</div><div class="s">'+rows.length+' entries</div></div>'+
+    '<div class="kpi"><div class="l">Days</div><div class="v" style="color:var(--c1)">'+days+'</div><div class="s">with spending</div></div>'+
+    '<div class="kpi"><div class="l">Avg / day</div><div class="v" style="color:var(--warn)">'+fmt(days?tot/days:0)+'</div><div class="s">per active day</div></div>'+
+    '<div class="kpi"><div class="l">Top category</div><div class="v" style="color:var(--c3);font-size:16px">'+topCat+'</div><div class="s">biggest spend</div></div>';
 
-  // month label
-  var mk=month; $('#mLabel').textContent=monthLabel(mk);
-
-  // category breakdown (selected month)
-  var mo=data.filter(function(x){var d=new Date(x.date+'T00:00:00');return d.getFullYear()===Math.floor(mk/100)&&d.getMonth()===(mk%100)-1;});
-  var catAgg={}; CATS.forEach(function(c){catAgg[c.id]=0;});
-  mo.forEach(function(x){catAgg[x.cat]=(catAgg[x.cat]||0)+x.amt;});
-  var moTot=sum(mo)||1;
+  var tc=function(){var cs=getComputedStyle(document.documentElement);return cs.getPropertyValue('--muted').trim();};
   var catsSorted=CATS.map(function(c){return {c:c,amt:catAgg[c.id]};}).filter(function(x){return x.amt>0;}).sort(function(a,b){return b.amt-a.amt;});
+  if(charts.cCat)charts.cCat.destroy();
+  charts.cCat=new Chart($('#cCat'),{type:'doughnut',data:{labels:catsSorted.map(function(x){return x.c.n;}),datasets:[{data:catsSorted.map(function(x){return +x.amt.toFixed(2);}),backgroundColor:catsSorted.map(function(x){return x.c.c;}),borderWidth:2,borderColor:'rgba(0,0,0,.25)',hoverOffset:6}]},options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{position:'bottom',labels:{color:tc(),boxWidth:11,font:{size:10},usePointStyle:true}}}}});
 
-  // doughnut
-  var tcol=function(){var cs=getComputedStyle(document.documentElement);return {text:cs.getPropertyValue('--muted').trim()};};
-  if(charts.cCat){charts.cCat.destroy();}
-  charts.cCat=new Chart($('#cCat'),{type:'doughnut',data:{labels:catsSorted.map(function(x){return x.c.n;}),datasets:[{data:catsSorted.map(function(x){return +x.amt.toFixed(2);}),backgroundColor:catsSorted.map(function(x){return x.c.c;}),borderWidth:2,borderColor:'rgba(0,0,0,.25)',hoverOffset:6}]},options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{position:'bottom',labels:{color:tcol().text,boxWidth:11,font:{size:10},usePointStyle:true}}}}});
+  // daily trend across the filtered range
+  var fromD=filter.from?new Date(filter.from+'T00:00:00'):new Date(Math.min.apply(null,data.map(function(x){return new Date(x.date).getTime();}).concat(Date.now())));
+  var toD=filter.to?new Date(filter.to+'T00:00:00'):new Date();
+  var labels=[],vals=[],d=new Date(fromD);var guard=0;
+  while(d<=toD&&guard<90){labels.push(dstr(d));vals.push(sum(rows.filter(function(x){return x.date===dstr(d);})));d=new Date(d.getTime()+86400000);guard++;}
+  if(labels.length===1){labels.push('');vals.push(0);}
+  if(charts.cDaily)charts.cDaily.destroy();
+  charts.cDaily=new Chart($('#cDaily'),{type:'bar',data:{labels:labels.map(function(x){return x.slice(8);}),datasets:[{data:vals.map(function(x){return +x.toFixed(2);}),backgroundColor:'#6366f1',borderRadius:5,maxBarThickness:26}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return fmt(c.raw);}}}},scales:{x:{ticks:{color:tc(),font:{size:9},autoSkip:true,maxTicksLimit:16},grid:{display:false}},y:{ticks:{color:tc(),font:{size:9}},grid:{color:'rgba(255,255,255,.06)'}}}}});
 
-  // daily trend (last 14 days)
-  var days14=[];for(var i=13;i>=0;i--){var dd=new Date(now.getTime()-i*86400000);days14.push(dstr(dd));}
-  var daily=days14.map(function(dd){return {d:dd,amt:sum(data.filter(function(x){return x.date===dd;}))};});
-  if(charts.cDaily){charts.cDaily.destroy();}
-  charts.cDaily=new Chart($('#cDaily'),{type:'bar',data:{labels:daily.map(function(x){return x.d.slice(8)+' '+MON[+x.d.slice(5,7)-1].slice(0,3);}),datasets:[{data:daily.map(function(x){return +x.amt.toFixed(2);}),backgroundColor:daily.map(function(x,i){return i===13?'#f59e0b':'#6366f1';}),borderRadius:6,maxBarThickness:26}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return fmt(c.raw);}}}},scales:{x:{ticks:{color:tcol().text,font:{size:9}},grid:{display:false}},y:{ticks:{color:tcol().text,font:{size:9}},grid:{color:'rgba(255,255,255,.06)'}}}}});
+  var moTot=tot||1;
+  $('#catTbl').innerHTML=catsSorted.map(function(x){return '<div class="row"><span class="dot" style="background:'+x.c.c+'"></span><span class="nm">'+x.c.e+' '+x.c.n+'</span><span class="pct">'+((x.amt/moTot)*100).toFixed(0)+'%</span><span class="am">'+fmt(x.amt)+'</span></div>';}).join('')||'<div class="empty">No expenses in this range.</div>';
 
-  // category table
-  $('#catTbl').innerHTML=catsSorted.map(function(x){
-    return '<div class="row"><span class="dot" style="background:'+x.c.c+'"></span><span class="nm">'+x.c.e+' '+x.c.n+'</span><span class="pct">'+((x.amt/moTot)*100).toFixed(0)+'%</span><span class="am">'+fmt(x.amt)+'</span></div>';
-  }).join('')||'<div class="empty">No expenses this month.</div>';
+  // transactions list
+  var txns=rows.slice().reverse().slice(0,100);
+  $('#txnList').innerHTML=txns.map(function(x){var c=catMap[x.cat]||catMap.other;return '<div class="exp"><div class="ic">'+c.e+'</div><div class="m"><b>'+c.n+'</b><span>'+(x.note?x.note+' · ':'')+x.date+'</span></div><div class="amt">'+fmt(x.amt)+'</div><button class="del" data-id="'+x.id+'">✕</button></div>';}).join('')||'<div class="empty">No transactions match.</div>';
+  $('#txnList').querySelectorAll('.del').forEach(function(b){b.addEventListener('click',function(){del(parseFloat(b.dataset.id));});});
 }
+
+/* filters events */
+$('#presets').addEventListener('click',function(e){var b=e.target.closest('.preset');if(b)applyPreset(b.dataset.p);});
+$('#fFrom').addEventListener('change',function(){filter.preset='';document.querySelectorAll('.preset').forEach(function(b){b.classList.remove('on');});filter.from=$('#fFrom').value;renderDash();});
+$('#fTo').addEventListener('change',function(){filter.preset='';document.querySelectorAll('.preset').forEach(function(b){b.classList.remove('on');});filter.to=$('#fTo').value;renderDash();});
+$('#fCat').addEventListener('change',function(){filter.cat=$('#fCat').value;renderDash();});
+$('#fSearch').addEventListener('input',function(){filter.q=$('#fSearch').value.trim();renderDash();});
 
 /* nav */
-function setView(v){
-  $('#vEntry').classList.toggle('hidden',v!=='entry');
-  $('#vDash').classList.toggle('hidden',v!=='dash');
-  $('#navEntry').classList.toggle('on',v==='entry');
-  $('#navDash').classList.toggle('on',v==='dash');
-  if(v==='dash')renderDash();
-}
+function setView(v){$('#vEntry').classList.toggle('hidden',v!=='entry');$('#vDash').classList.toggle('hidden',v!=='dash');$('#navEntry').classList.toggle('on',v==='entry');$('#navDash').classList.toggle('on',v==='dash');if(v==='dash')renderDash();}
 $('#navEntry').addEventListener('click',function(){setView('entry');});
 $('#navDash').addEventListener('click',function(){setView('dash');});
-$('#mPrev').addEventListener('click',function(){var y=Math.floor(month/100),m=(month%100)-1;var d=new Date(y,m-1,1);month=d.getFullYear()*100+(d.getMonth()+1);renderDash();});
-$('#mNext').addEventListener('click',function(){var y=Math.floor(month/100),m=(month%100)-1;var d=new Date(y,m+1,1);month=d.getFullYear()*100+(d.getMonth()+1);renderDash();});
 
-function render(){renderToday();renderDash();}
+function render(){renderRecent();renderDash();}
 function toast(m){var t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove('show');},1600);}
 
+applyPreset('month');
 render();
 setView('entry');
-
-/* PWA */
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
 })();
 </script>
